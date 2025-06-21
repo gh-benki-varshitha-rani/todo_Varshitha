@@ -1,0 +1,68 @@
+body {
+  font-family: 'Quicksand', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #00b4db, #0083b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; /* For non-webkit fallback */
+  color: transparent;
+}
+
+.main-bg {
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  min-height: 100vh;
+}
+
+.custom-btn {
+  transition: all 0.3s ease;
+}
+
+.custom-btn:hover {
+  background-color: #198754;
+  transform: scale(1.05);
+}
+
+.task-card {
+  background-color: #f8f9fa;
+  border-left: 6px solid #0d6efd;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  transition: 0.3s ease;
+}
+
+.task-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.completed {
+  border-left-color: #28a745;
+  background-color: #e6ffee;
+}
+
+.task-actions button {
+  margin-right: 10px;
+  transition: 0.2s ease;
+}
+
+.task-actions button:hover {
+  transform: scale(1.05);
+}
+#todo-list li {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#todo-list li:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+button.btn:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
+
+
