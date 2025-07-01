@@ -12,6 +12,9 @@ using TodoApi.Models;
 using TodoApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 
 // ✅ Add services
 builder.Services.AddScoped<TodoService>();
@@ -53,7 +56,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // ✅ Enable CORS
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // your React app
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
+
 
 // ✅ Configure EF with SQLite
 builder.Services.AddDbContext<TodoContext>(opt =>
@@ -93,10 +106,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(policy =>
-    policy.AllowAnyOrigin()
-          .AllowAnyMethod()
-          .AllowAnyHeader());
+
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication();  // 🔐 Must be before authorization
 app.UseAuthorization();

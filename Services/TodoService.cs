@@ -25,17 +25,26 @@ namespace TodoApi.Services
             Priority = item.Priority
         };
 
-        public async Task<IEnumerable<TodoItem>> GetAllAsync()
+        // 🔍 Get all todos for a specific user
+        public async Task<IEnumerable<TodoItemDTO>> GetAllAsync(string userId)
         {
-            return await _context.TodoItems.ToListAsync();
+            return await _context.TodoItems
+                .Where(t => t.UserId == userId)
+                .Select(t => ToDTO(t))
+                .ToListAsync();
         }
 
-        public async Task<TodoItem?> GetByIdAsync(long id)
+        // 🔍 Get a single todo (if owned by user)
+        public async Task<TodoItemDTO?> GetByIdAsync(long id, string userId)
         {
-            return await _context.TodoItems.FindAsync(id);
+            var todo = await _context.TodoItems
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+
+            return todo == null ? null : ToDTO(todo);
         }
 
-        public async Task<TodoItemDTO> CreateAsync(TodoItemDTO dto)
+        // ➕ Create new todo for a specific user
+        public async Task<TodoItemDTO> CreateAsync(TodoItemDTO dto, string userId)
         {
             var todo = new TodoItem
             {
@@ -43,20 +52,25 @@ namespace TodoApi.Services
                 Description = dto.Description,
                 DueDate = dto.DueDate,
                 IsComplete = dto.IsComplete,
-                Priority = dto.Priority
+                Priority = dto.Priority,
+                UserId = userId
             };
 
             _context.TodoItems.Add(todo);
             await _context.SaveChangesAsync();
+
             return ToDTO(todo);
         }
 
-        public async Task<TodoItemDTO?> UpdateAsync(long id, TodoItemDTO dto)
+        // ✏️ Update todo (only if it belongs to the user)
+        public async Task<TodoItemDTO?> UpdateAsync(long id, TodoItemDTO dto, string userId)
         {
             if (id != dto.Id)
                 return null;
 
-            var todo = await _context.TodoItems.FindAsync(id);
+            var todo = await _context.TodoItems
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+
             if (todo == null)
                 return null;
 
@@ -67,12 +81,16 @@ namespace TodoApi.Services
             todo.Priority = dto.Priority;
 
             await _context.SaveChangesAsync();
+
             return ToDTO(todo);
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        // ❌ Delete todo (only if it belongs to the user)
+        public async Task<bool> DeleteAsync(long id, string userId)
         {
-            var todo = await _context.TodoItems.FindAsync(id);
+            var todo = await _context.TodoItems
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+
             if (todo == null)
                 return false;
 

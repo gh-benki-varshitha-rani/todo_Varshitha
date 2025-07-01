@@ -1,13 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TodoApi.Models;
 using TodoApi.Services;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace TodoApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class TodoItemsController : ControllerBase
     {
         private readonly TodoService _todoService;
@@ -17,44 +18,64 @@ namespace TodoApi.Controllers
             _todoService = todoService;
         }
 
+        // 🔍 GET: /api/TodoItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
+        public async Task<IActionResult> GetAll()
         {
-            var items = await _todoService.GetAllAsync();
-            return Ok(items);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            var todos = await _todoService.GetAllAsync(userId);
+            return Ok(todos);
         }
 
+        // 🔍 GET: /api/TodoItems/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
+        public async Task<IActionResult> GetById(long id)
         {
-            var item = await _todoService.GetByIdAsync(id);
-            if (item == null)
-                return NotFound();
-            return Ok(item);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            var todo = await _todoService.GetByIdAsync(id, userId);
+            if (todo == null) return NotFound();
+
+            return Ok(todo);
         }
 
+        // ➕ POST: /api/TodoItems
         [HttpPost]
-        public async Task<ActionResult<TodoItemDTO>> PostTodoItem(TodoItemDTO dto)
+        public async Task<IActionResult> Create(TodoItemDTO dto)
         {
-            var created = await _todoService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetTodoItem), new { id = created.Id }, created);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            var createdTodo = await _todoService.CreateAsync(dto, userId);
+            return CreatedAtAction(nameof(GetById), new { id = createdTodo.Id }, createdTodo);
         }
 
+        // ✏️ PUT: /api/TodoItems/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(long id, TodoItemDTO dto)
+        public async Task<IActionResult> Update(long id, TodoItemDTO dto)
         {
-            var updated = await _todoService.UpdateAsync(id, dto);
-            if (updated == null)
-                return NotFound();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            var updated = await _todoService.UpdateAsync(id, dto, userId);
+            if (updated == null) return NotFound();
+
             return Ok(updated);
         }
 
+        // ❌ DELETE: /api/TodoItems/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
+        public async Task<IActionResult> Delete(long id)
         {
-            var deleted = await _todoService.DeleteAsync(id);
-            if (!deleted)
-                return NotFound();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            var deleted = await _todoService.DeleteAsync(id, userId);
+            if (!deleted) return NotFound();
+
             return NoContent();
         }
     }
