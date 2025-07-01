@@ -1,147 +1,180 @@
-# todo_Varshitha
-A ToDo List web application built using ASP.NET Core (.NET API) with a responsive frontend using HTML, CSS, JavaScript.
+# ToDo_Varshitha
 
-# ToDo List .NET Web App
+A full-stack ToDo List web application built using **ASP.NET Core (.NET 9 Web API)** and a responsive frontend using **HTML, CSS, JavaScript, and Bootstrap**.
 
-## Description
+---
 
-A simple ToDo List web application built with ASP.NET Core. This project demonstrates how to create, read, update, and delete tasks using a RESTful API.
+## 📝 Description
 
-## Installation Instructions
+This project demonstrates a secure and feature-rich ToDo List app with the following capabilities:
 
-To set up this project on your local machine:
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/your-username/todo_Varshitha.git
-    cd todo_Varshitha
-    ```
-2. Restore dependencies:
-    ```bash
-    dotnet restore
-    ```
-3. Build the project:
-    ```bash
-    dotnet build
-    ```
-4. Run the application:
-    ```bash
-    dotnet run
-    ```
-5. Open your browser and navigate to `http://localhost:5248` (or the port specified in the output) to access the app.
+- 🛡️ JWT-based authentication (login/register)
+- ✅ Create, read, update, delete tasks
+- 📊 Filter by status & search by title
+- ⭐ Priority handling
+- 🎯 Responsive frontend with Bootstrap
+- 🔐 Backend secured with role-based access
 
-## Repository
+---
 
-You can also clone the repository directly using the following command:
+## 🚀 Features
+
+### ✅ API Features
+
+- User authentication with JWT (login/register)
+- CRUD operations on tasks
+- Task filtering by status (Completed/Incompleted)
+- Task search by title
+- Priority management (1–5 stars)
+
+### 🎨 Frontend Features
+
+- Responsive design using Bootstrap
+- Add/Edit/Delete/Complete tasks
+- Priority selection using star rating
+- Search and filter tasks
+- Live updates via API
+
+---
+
+## 📁 Project Structure
+
+TodoApi/
+├── Controllers/ # Auth and Todo controllers
+├── Models/ # User, Task models and DTOs
+├── Services/ # AuthService, UserService, TodoService
+├── Migrations/ # EF Core migrations
+├── wwwroot/ # Frontend (index.html, CSS, JS)
+├── Program.cs # Main entry point
+├── appsettings.json # Configuration (JWT, DB)
+└── README.md # Project documentation
+
+yaml
+Copy
+Edit
+
+---
+
+## 🛠️ Technologies Used
+
+- **.NET 9 Web API (ASP.NET Core)**
+- **Entity Framework Core + SQLite**
+- **HTML5, CSS3, JavaScript**
+- **Bootstrap 5**
+- **Visual Studio / VS Code**
+- **Git & GitHub**
+
+---
+
+## 🖥️ Installation Instructions
+
+1. **Clone the repo:**
 
 ```bash
 git clone https://github.com/gh-benki-varshitha-rani/todo_Varshitha.git
-```
+cd todo_Varshitha
+Restore dependencies:
 
-This will create a local copy of the project on your machine.
-## Usage
+bash
+Copy
+Edit
+dotnet restore
+Build the project:
 
-2. Open the project folder in Visual Studio or VS Code.
+bash
+Copy
+Edit
+dotnet build
+Run the backend API:
 
-3. Use the built-in terminal or IDE features to run and debug the application.
+bash
+Copy
+Edit
+dotnet run --project TodoApi
+Visit the API docs:
 
-4. Interact with the API using tools like Postman or your browser, or use the provided frontend.
+bash
+Copy
+Edit
+https://localhost:5000/swagger
+Open index.html in a browser:
 
-## Features
+You can use Live Server in VS Code or open it directly to access the frontend.
 
-- Add, edit, and delete tasks
-- Mark tasks as completed
-- Responsive UI for desktop and mobile
-- RESTful API built with ASP.NET Core
+🔐 Authentication Flow
+Register a user at:
 
-## License
+bash
+Copy
+Edit
+POST /api/Auth/register
+Login with credentials:
 
-This project is licensed under the MIT License.
-## Contributing
+bash
+Copy
+Edit
+POST /api/Auth/login
+You'll receive a JWT token in the response.
 
-Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
+Copy the token and use it as:
 
-## Contact
+makefile
+Copy
+Edit
+Authorization: Bearer <your-token-here>
+Access secure endpoints like:
 
-For questions or feedback, please open an issue or contact the repository owner.
-## Running the Backend API
+bash
+Copy
+Edit
+GET /api/Todo
+💻 Usage
+On loading the page, all tasks are displayed.
 
-5. Run the backend API:
+Add tasks using the input form.
 
-    ```bash
-    dotnet run --project TodoApi
-    ```
+Use icons:
 
-   This will start the API server. By default, it will be available at `http://localhost:5248` (or the port specified in your launch settings).
+✏️ Edit
 
-You can now interact with the API endpoints using tools like Postman, curl, or your frontend application.
-6. Open `index.html` in your browser to view the frontend interface and interact with the ToDo List application.
-## How to Run the Project
+🗑️ Delete
 
-- Ensure that the .NET 9 SDK is installed on your machine.
-- Navigate to the project directory in your terminal.
-- Start the backend by running the following command:
-    ```
-    dotnet run
-    ```
-- The API should now be running and accessible at the configured URL (typically `https://localhost:5248` or `http://localhost:5248`).
-- Open `index.html` in your browser (you can use the `Live Server` extension in VS Code).
-## Features
+✔️ Mark Complete
 
-- Add new tasks
-- Edit task title, description, and due date
-- Delete tasks
-- Mark tasks as completed
-- Filter by task status (Completed / Incomplete)
-- Search tasks by title
-- Assign priority using 1–5 stars
-- Responsive UI with Bootstrap styling
-- Data persistence using EF Core and SQLite
-## Usage
+Use dropdown to filter tasks by status.
 
-- On page load, all tasks will be listed.
-- You can add a new task from the form at the top.
-- Click ✏️ to edit, 🗑️ to delete, and ✔️ to mark as complete.
-- Filter and search tasks using the dropdown and search box.
+Use the search box to find tasks by title.
 
-You can add screenshots here like:
+Prioritize using star ratings (1–5).
+
+📷 Screenshots (optional)
+You can include images like:
+
+markdown
+Copy
+Edit
 ![Todo Screenshot](./screenshots/todo1.png)
-## Technologies Used
+🧠 How GitHub Copilot Helped
+Generated boilerplate controller and model code
 
-- C# with .NET 9 (ASP.NET Core Web API)
-- Entity Framework Core
-- HTML, CSS, JavaScript
-- Bootstrap 5
-- Visual Studio Code
-## How GitHub Copilot Was Used
+Suggested LINQ queries
 
-- Used to generate boilerplate API controller code
-- Suggested LINQ queries and DTO conversion logic
-- Helped write frontend JS functions like `fetch`, `POST`, `PUT`, and `DELETE`
-- Assisted in writing clean and readable CSS styles
-## Project Structure
+Wrote frontend JS for fetch/POST/PUT/DELETE
 
-```
-TodoApi/
-├── Controllers/         # API controllers for handling HTTP requests
-├── Models/              # Data models and DTOs
-├── Data/                # Database context and migrations
-├── wwwroot/             # Static frontend files (HTML, CSS, JS)
-├── Program.cs           # Application entry point
-├── appsettings.json     # Configuration settings
-├── TodoApi.csproj       # Project file
-└── README.md            # Project documentation
-```
+Assisted in writing CSS and Bootstrap layout
 
-This structure separates backend logic, data access, and frontend assets for maintainability and clarity.
-## Troubleshooting
+🧪 Troubleshooting
+.NET not recognized? Install .NET 9 SDK
 
-- If you encounter errors during `dotnet restore` or `dotnet build`, ensure you have the correct .NET SDK version installed.
-- For port conflicts, update the launch settings or use a different port.
-- If the frontend does not load tasks, check the browser console for API errors and verify the backend is running.
-- For database issues, delete the `TodoApi.db` file and let EF Core recreate it on next run.
+Database issues? Delete TodoList.db and rerun
 
-## Acknowledgements
+Frontend not showing tasks? Check console logs and API server
 
-- Inspired by the official Microsoft ASP.NET Core documentation.
-- Thanks to the open-source community for helpful libraries and tools.
-- Special thanks to GitHub Copilot for code suggestions and productivity boosts.
+Port conflict? Update launchSettings.json
+
+📜 License
+This project is licensed under the MIT License.
+
+🤝 Contributing
+Contributions welcome! Fork the repo, make changes, and submit a pull request.
+
