@@ -15,7 +15,7 @@ namespace TodoApi.Services
             _context = context;
         }
 
-        private TodoItemDTO ToDTO(TodoItem item) => new TodoItemDTO
+        private static TodoItemDTO ToDTO(TodoItem item) => new TodoItemDTO
         {
             Id = item.Id,
             Title = item.Title,
@@ -100,5 +100,4 @@ namespace TodoApi.Services
         }
     }
 }
-
 
