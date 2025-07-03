@@ -22,9 +22,12 @@ namespace TodoApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Unauthorized();
+            // Example usage in controller
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdStr, out var userId))
+                return Unauthorized();
 
+            // Now use userId (int) in your service calls
             var todos = await _todoService.GetAllAsync(userId);
             return Ok(todos);
         }
@@ -33,8 +36,9 @@ namespace TodoApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(long id)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Unauthorized();
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdStr, out var userId))
+                return Unauthorized(); // or handle error
 
             var todo = await _todoService.GetByIdAsync(id, userId);
             if (todo == null) return NotFound();
@@ -46,8 +50,9 @@ namespace TodoApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(TodoItemDTO dto)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Unauthorized();
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdStr, out var userId))
+                return Unauthorized(); // or handle error
 
             var createdTodo = await _todoService.CreateAsync(dto, userId);
             return CreatedAtAction(nameof(GetById), new { id = createdTodo.Id }, createdTodo);
@@ -57,8 +62,9 @@ namespace TodoApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(long id, TodoItemDTO dto)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Unauthorized();
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdStr, out var userId))
+                return Unauthorized(); // or handle error
 
             var updated = await _todoService.UpdateAsync(id, dto, userId);
             if (updated == null) return NotFound();
@@ -70,8 +76,9 @@ namespace TodoApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Unauthorized();
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdStr, out var userId))
+                return Unauthorized(); // or handle error
 
             var deleted = await _todoService.DeleteAsync(id, userId);
             if (!deleted) return NotFound();

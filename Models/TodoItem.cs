@@ -1,14 +1,20 @@
 namespace TodoApi.Models;
-
 public class TodoItem
 {
     public long Id { get; set; }
-    public string? Title { get; set; }
-    public string? Description { get; set; }  // optional
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public DateTime DueDate { get; set; }
     public bool IsComplete { get; set; }
-    public int Priority { get; set; }  // e.g., 1 (High), 2 (Medium), 3 (Low)
-        public string ? UserId { get; set; }  // or Guid or int based on your user model
+    public int Priority { get; set; } // Changed from string to int for consistency
+
+    public int OwnerId { get; set; }
+    public User? Owner { get; set; } // Navigation property
+
+    public int? AssignedToId { get; set; }
+    public User? AssignedTo { get; set; } // Navigation property
 }
+
+
 
 

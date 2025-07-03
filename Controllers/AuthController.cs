@@ -22,9 +22,9 @@ namespace TodoApi.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register(UserDto request)
+        public IActionResult Register(UserRegisterDto request)
         {
-            bool registered = _userService.RegisterUser(request.Username, request.Password);
+            bool registered = _userService.RegisterUser(request.Username, request.Password, request.Role);
             if (!registered)
                 return BadRequest("User already exists.");
 
@@ -32,20 +32,23 @@ namespace TodoApi.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(UserDto request)
+        public IActionResult Login(UserLoginDto request)
         {
             var user = _userService.Authenticate(request.Username, request.Password);
             if (user == null)
                 return Unauthorized("Invalid credentials.");
 
-            // ✅ Create JWT token
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role ?? "User") // <-- Add this line
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var jwtKey = _configuration["Jwt:Key"];
+            if (string.IsNullOrEmpty(jwtKey))
+                return StatusCode(500, "JWT key is not configured.");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(

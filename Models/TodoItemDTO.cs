@@ -7,5 +7,11 @@ public class TodoItemDTO
     public string? Description { get; set; }
     public DateTime DueDate { get; set; }
     public bool IsComplete { get; set; }
-    public int Priority { get; set; }
+    public int Priority { get; set; } // Changed from string to int for consistency
+
+    // For admin/task assignment support
+    public int OwnerId { get; set; }
+    public int? AssignedToId { get; set; }
+    public string? OwnerName { get; set; }
+    public string? AssignedToName { get; set; }
 }

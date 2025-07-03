@@ -9,9 +9,7 @@ namespace TodoApi.Models
         {
         }
 
+        public DbSet<User> Users { get; set; } = null!;
         public DbSet<TodoItem> TodoItems { get; set; } = null!;
-
-        // ✅ Add this line to support user accounts
-        public DbSet<User> Users { get; set; } 
     }
 }

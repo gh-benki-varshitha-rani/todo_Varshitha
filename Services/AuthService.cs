@@ -14,7 +14,8 @@ namespace TodoApi.Services
             _context = context;
         }
 
-        public async Task<bool> RegisterAsync(string username, string password)
+        // Add role parameter with default "User"
+        public async Task<bool> RegisterAsync(string username, string password, string role = "User")
         {
             if (await _context.Users.AnyAsync(u => u.Username == username))
                 return false;
@@ -24,7 +25,8 @@ namespace TodoApi.Services
             var user = new User
             {
                 Username = username,
-                PasswordHash = passwordHash
+                PasswordHash = passwordHash,
+                Role = role // Ensure role is set
             };
 
             _context.Users.Add(user);

@@ -12,7 +12,7 @@ namespace TodoApi.Services
             _context = context;
         }
 
-        public bool RegisterUser(string username, string password)
+        public bool RegisterUser(string username, string password, string role = "User")
         {
             if (_context.Users.Any(u => u.Username == username))
                 return false;
@@ -20,7 +20,8 @@ namespace TodoApi.Services
             var user = new User
             {
                 Username = username,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+                Role = role
             };
 
             _context.Users.Add(user);
