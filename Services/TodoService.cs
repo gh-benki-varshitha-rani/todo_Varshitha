@@ -96,31 +96,33 @@ namespace TodoApi.Services
             return ToDTO(todoItem);
         }
 
-        // ✏️ Update todo (only if it belongs to or is assigned to the user)
-        public async Task<TodoItemDTO?> UpdateAsync(long id, TodoItemDTO dto, int userId)
-        {
-            if (id != dto.Id)
-                return null;
+public async Task<TodoItemDTO?> UpdateAsync(long id, TodoItemDTO dto, int userId)
+{
+    var user = await _context.Users.FindAsync(userId);
+    if (user == null) return null;
 
-            var todo = await _context.TodoItems
-                .Include(t => t.Owner)
-                .Include(t => t.AssignedTo)
-                .FirstOrDefaultAsync(t => t.Id == id && (t.OwnerId == userId || t.AssignedToId == userId));
+    bool isAdmin = user.Role == "Admin";
 
-            if (todo == null)
-                return null;
+    var todo = await _context.TodoItems
+        .Include(t => t.Owner)
+        .Include(t => t.AssignedTo)
+        .FirstOrDefaultAsync(t => t.Id == id && (isAdmin || t.OwnerId == userId || t.AssignedToId == userId));
 
-            todo.Title = dto.Title;
-            todo.Description = dto.Description;
-            todo.DueDate = dto.DueDate;
-            todo.IsComplete = dto.IsComplete;
-            todo.Priority = dto.Priority;
-            todo.AssignedToId = dto.AssignedToId;
+    if (todo == null)
+        return null;
 
-            await _context.SaveChangesAsync();
+    todo.Title = dto.Title;
+    todo.Description = dto.Description;
+    todo.DueDate = dto.DueDate;
+    todo.IsComplete = dto.IsComplete;
+    todo.Priority = dto.Priority;
+    todo.AssignedToId = dto.AssignedToId;
 
-            return ToDTO(todo);
-        }
+    await _context.SaveChangesAsync();
+
+    return ToDTO(todo);
+}
+
 
         // ❌ Delete todo (only if it belongs to the user as owner)
         public async Task<bool> DeleteAsync(long id, int userId)

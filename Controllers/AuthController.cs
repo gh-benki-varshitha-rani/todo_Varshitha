@@ -21,52 +21,59 @@ namespace TodoApi.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("register")]
-        public IActionResult Register(UserRegisterDto request)
-        {
-            bool registered = _userService.RegisterUser(request.Username, request.Password, request.Role);
-            if (!registered)
-                return BadRequest("User already exists.");
+[HttpPost("register")]
+public IActionResult Register(UserRegisterDto request)
+{
+    bool registered = _userService.RegisterUser(request.Username, request.Password, request.Role);
+    
+    if (!registered)
+        return BadRequest(new { message = "User already exists." }); // ✅ JSON
 
-            return Ok("User registered successfully.");
-        }
+    return Ok(new { message = "User registered successfully." });     // ✅ JSON
+}
 
-        [HttpPost("login")]
-        public IActionResult Login(UserLoginDto request)
-        {
-            var user = _userService.Authenticate(request.Username, request.Password);
-            if (user == null)
-                return Unauthorized("Invalid credentials.");
 
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role ?? "User") // <-- Add this line
-            };
+[HttpPost("login")]
+public IActionResult Login(UserLoginDto request)
+{
+    var user = _userService.Authenticate(request.Username, request.Password);
+    if (user == null)
+        return Unauthorized(new { message = "Invalid credentials." });
 
-            var jwtKey = _configuration["Jwt:Key"];
-            if (string.IsNullOrEmpty(jwtKey))
-                return StatusCode(500, "JWT key is not configured.");
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+    var claims = new[]
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Role, user.Role ?? "User")
+    };
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(60),
-                signingCredentials: creds
-            );
+    var jwtKey = _configuration["Jwt:Key"];
+    if (string.IsNullOrEmpty(jwtKey))
+        return StatusCode(500, "JWT key is not configured.");
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            return Ok(new
-            {
-                message = "Login successful.",
-                token = tokenString
-            });
-        }
+    var token = new JwtSecurityToken(
+        issuer: _configuration["Jwt:Issuer"],
+        audience: _configuration["Jwt:Audience"],
+        claims: claims,
+        expires: DateTime.UtcNow.AddMinutes(60),
+        signingCredentials: creds
+    );
+
+    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+    return Ok(new
+    {
+        token = tokenString,
+        username = user.Username,
+        role = user.Role,
+            userId = user.Id // ✅ Make sure this is returned!
+
+    });
+}
+
     }
 }
 
