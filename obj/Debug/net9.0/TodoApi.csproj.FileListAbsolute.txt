@@ -313,3 +313,6 @@ C:\Users\bvars\OneDrive\Desktop\.net\TodoApi\obj\Debug\net9.0\refint\TodoApi.dll
 C:\Users\bvars\OneDrive\Desktop\.net\TodoApi\obj\Debug\net9.0\TodoApi.pdb
 C:\Users\bvars\OneDrive\Desktop\.net\TodoApi\obj\Debug\net9.0\TodoApi.genruntimeconfig.cache
 C:\Users\bvars\OneDrive\Desktop\.net\TodoApi\obj\Debug\net9.0\ref\TodoApi.dll
+C:\Users\bvars\OneDrive\Desktop\.net\TodoApi\bin\Debug\net9.0\frontend\package-lock.json
+C:\Users\bvars\OneDrive\Desktop\.net\TodoApi\bin\Debug\net9.0\frontend\package.json
+C:\Users\bvars\OneDrive\Desktop\.net\TodoApi\bin\Debug\net9.0\frontend\public\manifest.json

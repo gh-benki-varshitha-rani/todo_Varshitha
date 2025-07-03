@@ -114,7 +114,7 @@ export default function TodoForm({ onSave, editingTodo, onCancel, users, role, u
           <option value="">-- Assign To --</option>
           {users.map((user) => (
             <option key={user.id} value={user.id}>
-              {user.username} ({user.role})
+              {user.username} 
             </option>
           ))}
         </select>

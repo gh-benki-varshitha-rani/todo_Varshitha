@@ -19,18 +19,22 @@ export default function TodoList() {
     return true;
   });
 
-  useEffect(() => {
-    if (role === "Admin") {
-      fetch("http://localhost:5000/api/Admin/users", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+useEffect(() => {
+  if (role === "Admin") {
+    fetch("http://localhost:5000/api/Admin/users", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        // ✅ Only keep users with role "User"
+        const filtered = data.filter(user => user.role === "User");
+        setUsers(filtered);
       })
-        .then(res => res.json())
-        .then(data => setUsers(data))
-        .catch(err => console.error("❌ Failed to load users", err));
-    }
-  }, [role, token]);
+      .catch(err => console.error("❌ Failed to load users", err));
+  }
+}, [role, token]);
 
   async function loadTodos() {
     try {
@@ -121,12 +125,39 @@ console.log("Payload before sending:", payload);
   function handleCancelEdit() {
     setEditingTodo(null);
   }
-
+const completedCount = todos.filter(todo => todo.isComplete).length;
+const totalCount = todos.length;
+const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
   return (
     <div>
       <h2>📝 Todo List</h2>
 
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {/* Dynamic Progress Bar */}
+      <div style={{ marginBottom: "20px" }}>
+        <div style={{ fontWeight: "bold", marginBottom: "5px" }}>
+          Progress: {completedCount}/{totalCount} tasks completed ({progressPercent}%)
+        </div>
+        <div style={{ height: "20px", backgroundColor: "#eee", borderRadius: "5px", overflow: "hidden" }}>
+          <div
+            style={{
+              width: `${progressPercent}%`,
+              height: "100%",
+              backgroundColor: progressPercent === 100 ? "#4caf50" : "#2196f3",
+              transition: "width 0.3s ease"
+            }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Place this above the <TodoForm /> */}
+      <TodoForm
+        onSave={handleAddOrUpdate}
+        editingTodo={editingTodo}
+        onCancel={editingTodo ? handleCancelEdit : null}
+        users={users}
+        role={role}
+        userId={userId}
+      />
 
       {/* 🔍 Filter dropdown */}
       <div style={{ margin: "10px 0" }}>
@@ -137,15 +168,6 @@ console.log("Payload before sending:", payload);
           <option value="incomplete">🕗 Incomplete</option>
         </select>
       </div>
-
-      <TodoForm
-        onSave={handleAddOrUpdate}
-        editingTodo={editingTodo}
-        onCancel={editingTodo ? handleCancelEdit : null}
-        users={users}
-        role={role}
-        userId={userId}
-      />
 
       <ul style={{ padding: 0, listStyleType: "none" }}>
         {filteredTodos.map((todo) => (
