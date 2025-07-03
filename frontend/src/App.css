@@ -1,0 +1,22 @@
+body {
+  background: #f0f8ff;
+  font-family: "Segoe UI", sans-serif;
+}
+h2 {
+  color: #333;
+}
+.list-group-item h5 {
+  font-weight: bold;
+}
+.btn {
+  transition: 0.2s ease-in-out;
+}
+.btn:hover {
+  transform: scale(1.05);
+}
+.progress-bar {
+  background-color: #28a745;
+  font-weight: bold;
+}
+
+
